@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lin.dao.IGoodDao">
+
+	<resultMap type="good" id="sel">
+		<id column="goodsId" property="goodsId" />
+		<result column="goodsName" property="goodsName" />
+		<result column="goodsType" property="goodsType" />
+		<result column="goodsClassId" property="goodsClassId" />
+		<result column="goodsPrice" property="goodsPrice" />
+		<collection property="goodc" ofType="goodsclass">
+			<id column="goodsClassId" property="goodsClassId" />
+			<result column="goodsClassName" property="goodsClassName" />
+		</collection>
+	</resultMap>
+
+	<!-- 查询全部商品信息 -->
+	<select id="queryAllGood" resultMap="sel">
+		SELECT * FROM goods g,
+		goodsClass c
+		WHERE g.goodsClassId = c.goodsClassId
+	</select>
+
+	<!-- 根据id查询详细信息 -->
+	<select id="queryById" resultType="good">
+		SELECT * FROM goods g,
+		goodsClass c
+		WHERE g.goodsClassId = c.goodsClassId and goodsId = #{id}
+	</select>
+
+	<!-- 新增商品信息 -->
+	<insert id="addGood">
+		INSERT INTO
+		goods(goodsName,goodsType,goodsClassId,goodsPrice)
+		VALUES(#{good.goodsName},#{good.goodsType},#{good.goodsClassId},#{good.goodsPrice})
+	</insert>
+
+	<!-- 修改商品信息 -->
+	<update id="updateGood">
+		update goods
+		<set>
+			<if test="good.goodsName!=null">
+				goodsName = #{good.goodsName },
+			</if>
+			<if test="good.goodsType!=null">
+				goodsType = #{good.goodsType },
+			</if>
+			<if test="good.goodsClassId!=null">
+				goodsClassId = #{good.goodsClassId },
+			</if>
+			<if test="good.goodsPrice!=null">
+				goodsPrice = #{good.goodsPrice }
+			</if>
+		</set>
+		where goodsId = #{good.goodsId}
+	</update>
+
+	<!-- 删除商品信息 -->
+	<delete id="deleteGoodById">
+		delete from goods where goodsId =#{id}
+	</delete>
+
+	<!-- 查询全部分类 -->
+	<select id="queryAllGoodsClass" resultType="goodsclass">
+		SELECT * FROM
+		goodsClass
+	</select>
+
+
+
+</mapper>
